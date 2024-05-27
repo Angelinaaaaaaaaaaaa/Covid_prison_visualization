@@ -1,2 +1,9 @@
-# Covid_prison_visualization
-DSC106 Final project by Angelina Zhang, Ziyu Huang, and Bella Wang
+# set-up
+
+Use the following code to setup:
+
+```bash
+npm install .
+npm run dev -- --open
+```
+
