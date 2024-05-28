@@ -37,7 +37,7 @@
   async function fetchCovidDataAndVisualizeMap() {
     try {
       const covidData = await fetchJSON('../data/03.json');
-      const topoData = await fetchJSON('../data/us1.json');
+      const topoData = await fetchJSON('https://unpkg.com/us-atlas@3/states-albers-10m.json');
 
       // Convert TopoJSON to GeoJSON manually
       const geoData = topoToGeo(topoData);
