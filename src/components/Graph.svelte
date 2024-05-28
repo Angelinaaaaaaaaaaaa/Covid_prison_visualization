@@ -4,9 +4,22 @@
   import { fetchJSON } from './utils';
   import { onMount } from 'svelte';
 
-
   mapboxgl.accessToken = 'pk.eyJ1IjoiYmVlbGExMTAxIiwiYSI6ImNsdzFjZjgzbDBhbHgycHFxOTBweDJtOGgifQ.O0HdrUIX0Ph5GaBY8HvsTA';
   let map;
+
+  // Assuming you have a mapping from TopoJSON ID to state codes
+  const idToStateCode = {
+    "53073": "WA",
+    "30105": "MT",
+    "30029": "MT",
+    "16021": "ID",
+    "30071": "MT",
+    "38079": "ND",
+    "30053": "MT",
+    "38009": "ND",
+    "30035": "MT",
+    // Add all necessary mappings here
+  };
 
   function createMap() {
     map = new mapboxgl.Map({
@@ -23,55 +36,77 @@
 
   async function fetchCovidDataAndVisualizeMap() {
     try {
-      const covidData = await fetchJSON('../data/202001.json');
-      const tilesetURL = 'mapbox://mapbox.boundaries-adm1-v4';
+      const covidData = await fetchJSON('../data/03.json');
+      const topoData = await fetchJSON('../data/us1.json');
+
+      // Convert TopoJSON to GeoJSON manually
+      const geoData = topoToGeo(topoData);
+
       map.addSource('states', {
-        type: 'vector',
-        url: tilesetURL
+        type: 'geojson',
+        data: geoData
       });
 
-      map.on('idle', () => {
-        const features = map.querySourceFeatures('states');
-        const joinedData = features.map(feature => {
-          const stateName = feature.properties.name;
-          const stateData = covidData.find(data => data.state === stateName);
-          return {
-            ...feature,
-            properties: {
-              ...feature.properties,
-              cases: stateData ? stateData.cases : 0
-            }
-          };
-        });
-
-        visualizeMap(joinedData);
+      const joinedData = geoData.features.map(feature => {
+        const stateCode = idToStateCode[feature.id];
+        const stateData = covidData.find(data => data.code === stateCode);
+        feature.properties.cases = stateData ? stateData.cases : 0;
+        return feature;
       });
+
+      visualizeMap(joinedData);
     } catch (error) {
-      console.error('Error fetching COVID-19 data:', error);
+      console.error('Error fetching data:', error);
     }
   }
 
+  function topoToGeo(topoData) {
+    const geoData = { type: "FeatureCollection", features: [] };
+    const arcs = topoData.arcs;
+    const scale = topoData.transform.scale;
+    const translate = topoData.transform.translate;
+
+    for (let key in topoData.objects.counties.geometries) {
+      const geometry = topoData.objects.counties.geometries[key];
+      const coordinates = geometry.arcs.map(arc => arc.map(point => [
+        point[0] * scale[0] + translate[0],
+        point[1] * scale[1] + translate[1]
+      ]));
+      geoData.features.push({
+        type: "Feature",
+        id: geometry.id,
+        properties: {},
+        geometry: {
+          type: geometry.type,
+          coordinates: coordinates
+        }
+      });
+    }
+
+    return geoData;
+  }
+
   function visualizeMap(data) {
-    const colorScale = d3.scaleSequential()
-      .domain([0, d3.max(data, d => d.properties.cases)])
-      .interpolator(d3.interpolateBlues);
+    const thresholds = [100, 500, 1000, 5000];
+    const colors = ['#ffffff', '#ffcc00', '#ff6600', '#ff3300', '#cc0000'];
 
     map.addLayer({
       id: 'state-boundaries',
       type: 'fill',
       source: 'states',
-      'source-layer': 'boundaries_admin_1',
-      // paint: {
-      //   'fill-color': ['interpolate', ['linear'], ['get', 'cases'],
-      //     0, '#f8f4f9',
-      //     100, '#e0ecf4',
-      //     500, '#9ebcda',
-      //     1000, '#8856a7',
-      //     2000, '#810f7c'
-      //   ],
-      //   'fill-opacity': 0.7,
-      //   'fill-outline-color': '#000000'
-      // }
+      paint: {
+        'fill-color': [
+          'step',
+          ['get', 'cases'],
+          colors[0],
+          thresholds[0], colors[1],
+          thresholds[1], colors[2],
+          thresholds[2], colors[3],
+          thresholds[3], colors[4]
+        ],
+        'fill-opacity': 0.7,
+        'fill-outline-color': '#000000'
+      }
     });
   }
 
@@ -90,4 +125,3 @@
 <main>
   <div id="map"></div>
 </main>
-
