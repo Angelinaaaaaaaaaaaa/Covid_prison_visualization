@@ -1,6 +1,6 @@
 <script>
   import mapboxgl from 'mapbox-gl';
-  import * as d3 from 'd3';
+  // import * as d3 from 'd3';
   import { fetchJSON } from './utils';
   import { onMount } from 'svelte';
 
@@ -36,8 +36,9 @@
 
   async function fetchCovidDataAndVisualizeMap() {
     try {
-      const covidData = await fetchJSON('../data/03.json');
-      const topoData = await fetchJSON('../data/us1.json');
+
+      const covidData = await fetchJSON('../../public/assets/data/03.json');
+      const topoData = await fetchJSON('../../public/assets/data/us1.json');
 
       // Convert TopoJSON to GeoJSON manually
       const geoData = topoToGeo(topoData);
