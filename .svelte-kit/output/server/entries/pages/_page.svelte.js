@@ -1,4 +1,4 @@
-import { c as create_ssr_component, d as add_attribute, e as escape, v as validate_component, f as each } from "../../chunks/index.js";
+import { c as create_ssr_component, f as add_attribute, e as escape, v as validate_component, h as each } from "../../chunks/vendor.js";
 import mapboxgl from "mapbox-gl";
 import { geoMercator } from "d3-geo";
 const Scroller_svelte_svelte_type_style_lang = "";
