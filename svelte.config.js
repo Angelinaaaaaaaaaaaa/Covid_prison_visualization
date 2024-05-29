@@ -1,20 +1,19 @@
 import adapter from '@sveltejs/adapter-static';
-import preprocess from 'svelte-preprocess';
+import { vitePreprocess } from '@sveltejs/kit/vite';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
-	kit: {
-		adapter: adapter({
-			pages: 'build',
-			assets: 'build',
-			fallback: null,
-		}),
-		prerender: {
-			// Pre-render all routes by default
-			entries: ['*']
-		}
-	},
-	preprocess: preprocess()
+  kit: {
+    adapter: adapter({
+      pages: 'build',
+      assets: 'build',
+      fallback: null
+    }),
+    paths: {
+      base: process.env.NODE_ENV === 'production' ? '/Covid_visualization' : ''
+    }
+  },
+  preprocess: vitePreprocess()
 };
 
 export default config;
