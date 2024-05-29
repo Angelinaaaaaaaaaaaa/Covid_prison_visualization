@@ -10,7 +10,7 @@ return {
 	assets: new Set([]),
 	mimeTypes: {},
 	_: {
-		client: {"start":"_app/immutable/entry/start.c9ede6ed.js","app":"_app/immutable/entry/app.6caa868b.js","imports":["_app/immutable/entry/start.c9ede6ed.js","_app/immutable/chunks/index.11e7d0cf.js","_app/immutable/chunks/singletons.f0130853.js","_app/immutable/entry/app.6caa868b.js","_app/immutable/chunks/index.11e7d0cf.js"],"stylesheets":[],"fonts":[]},
+		client: {"start":"_app/immutable/entry/start.aac78ef5.js","app":"_app/immutable/entry/app.e1ff2716.js","imports":["_app/immutable/entry/start.aac78ef5.js","_app/immutable/chunks/index.11e7d0cf.js","_app/immutable/chunks/singletons.eb6bc46e.js","_app/immutable/entry/app.e1ff2716.js","_app/immutable/chunks/index.11e7d0cf.js"],"stylesheets":[],"fonts":[]},
 		nodes: [
 			__memo(() => import('./nodes/0.js')),
 			__memo(() => import('./nodes/1.js')),
