@@ -1,6 +1,5 @@
 <script>
 
-
 </script>
 
 <svg class="graph">

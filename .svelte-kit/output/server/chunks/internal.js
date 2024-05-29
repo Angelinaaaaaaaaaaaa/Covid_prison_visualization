@@ -1,5 +1,5 @@
 import { c as create_ssr_component, a as setContext, b as afterUpdate, v as validate_component, m as missing_component } from "./vendor.js";
-let base = "";
+let base = "/Covid_visualization";
 let assets = base;
 const initial = { base, assets };
 function reset() {
@@ -180,7 +180,7 @@ const options = {
 		<div class="error">
 			<span class="status">` + status + '</span>\n			<div class="message">\n				<h1>' + message + "</h1>\n			</div>\n		</div>\n	</body>\n</html>\n"
   },
-  version_hash: "4q0qzc"
+  version_hash: "46ahw3"
 };
 function get_hooks() {
   return {};
